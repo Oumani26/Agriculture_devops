@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>AgroTerroir — De la Terre à Votre Table</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            forest: { 50:'#f0faf0', 100:'#d6f0d6', 200:'#aadcaa', 300:'#74c274', 400:'#4aaa4a', DEFAULT:'#2d7a2d', 600:'#236023', 700:'#1a481a', 800:'#103010', 900:'#081808' },
+            gold:   { light:'#f5d76e', DEFAULT:'#d4a017', dark:'#a07810' },
+            clay:   { light:'#f0e0c8', DEFAULT:'#c8845a', dark:'#8b4a2a' },
+            cream:  '#faf6ee',
+          },
+          fontFamily: { display:['Playfair Display','serif'], body:['Inter','sans-serif'] },
+          backgroundImage: {
+            'hero': "linear-gradient(135deg,rgba(13,40,13,0.88) 0%,rgba(45,60,20,0.75) 50%,rgba(80,50,10,0.70) 100%)",
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* ══════════════════════ VARIABLES & BASE ══════════════════════ */
+    :root {
+      --forest: #2d7a2d;
+      --forest-dark: #1a481a;
+      --gold: #d4a017;
+      --gold-light: #f5d76e;
+      --clay: #c8845a;
+      --cream: #faf6ee;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: #fff; color: #1a2a1a; overflow-x: hidden; }
+
+    /* ══════════════════════ HERO ══════════════════════ */
+    .hero-section {
+      background-image:
+        linear-gradient(135deg, rgba(10,35,10,0.90) 0%, rgba(30,55,15,0.78) 45%, rgba(70,45,10,0.72) 100%),
+        url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1920&q=90');
+      background-size: cover;
+      background-position: center 30%;
+      background-attachment: fixed;
+    }
+
+    /* ══════════════════════ NAVBAR ══════════════════════ */
+    #navbar { transition: background .4s ease, box-shadow .4s ease, padding .3s ease; }
+    #navbar.scrolled {
+      background: rgba(255,255,255,0.97) !important;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+    }
+    #navbar.scrolled .nav-link { color: #1a481a; }
+    #navbar.scrolled .nav-logo-text { color: #1a481a; }
+    #navbar.scrolled .nav-logo-accent { color: #c8845a; }
+    #navbar.scrolled #burger span { background: #1a481a; }
+
+    /* ══════════════════════ CARD PRODUIT ══════════════════════ */
+    .prod-card { transition: transform .4s cubic-bezier(.175,.885,.32,1.275), box-shadow .4s ease; }
+    .prod-card:hover { transform: translateY(-10px) scale(1.01); box-shadow: 0 30px 60px rgba(45,122,45,0.18), 0 10px 20px rgba(0,0,0,0.08); }
+    .prod-card-img { transition: transform .6s cubic-bezier(.25,.46,.45,.94); }
+    .prod-card:hover .prod-card-img { transform: scale(1.10); }
+    .prod-card::before {
+      content:''; position:absolute; inset:0; border-radius:inherit;
+      background: linear-gradient(135deg, rgba(45,122,45,0.06), transparent);
+      opacity:0; transition: opacity .4s; pointer-events:none; z-index:1;
+    }
+    .prod-card:hover::before { opacity:1; }
+
+    /* ══════════════════════ TEXTE GRADIENT ══════════════════════ */
+    .text-gradient-gold {
+      background: linear-gradient(135deg, #f5d76e 0%, #d4a017 40%, #f5d76e 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .text-gradient-green {
+      background: linear-gradient(135deg, #4aaa4a 0%, #2d7a2d 50%, #1a481a 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    /* ══════════════════════ ANIMATIONS ══════════════════════ */
+    @keyframes fadeUp   { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+    @keyframes float    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+    @keyframes shimmer  { 0%{background-position:-200%} 100%{background-position:200%} }
+    @keyframes pulse-r  { 0%,100%{box-shadow:0 0 0 0 rgba(212,160,23,0.5)} 50%{box-shadow:0 0 0 10px rgba(212,160,23,0)} }
+    @keyframes spin-slow { to { transform: rotate(360deg); } }
+    @keyframes bounce-arrow { 0%,100%{transform:translateY(0) translateX(-50%)} 50%{transform:translateY(10px) translateX(-50%)} }
+    @keyframes countUp { from { opacity:0; transform:scale(0.7); } to { opacity:1; transform:scale(1); } }
+
+    .animate-fade-up   { animation: fadeUp .8s ease forwards; }
+    .animate-fade-in   { animation: fadeIn .8s ease forwards; }
+    .animate-float     { animation: float 4s ease-in-out infinite; }
+    .animate-bounce-arrow { animation: bounce-arrow 2s ease-in-out infinite; }
+
+    .delay-100 { animation-delay:.1s; }
+    .delay-200 { animation-delay:.2s; }
+    .delay-300 { animation-delay:.3s; }
+    .delay-400 { animation-delay:.4s; }
+    .delay-500 { animation-delay:.5s; }
+    .delay-600 { animation-delay:.6s; }
+    .delay-700 { animation-delay:.7s; }
+    .opacity-0-init { opacity:0; }
+
+    /* Shimmer button */
+    .btn-shimmer {
+      position:relative; overflow:hidden;
+      background: linear-gradient(135deg, #c8845a, #a05030, #c8845a);
+      background-size: 200%;
+    }
+    .btn-shimmer:hover { animation: shimmer 1.5s linear infinite; }
+    .btn-shimmer::after {
+      content:''; position:absolute; inset:0;
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.25) 50%, transparent 70%);
+      transform: translateX(-100%); transition: transform .6s ease;
+    }
+    .btn-shimmer:hover::after { transform: translateX(100%); }
+
+    /* ══════════════════════ SCROLL REVEAL ══════════════════════ */
+    .sr { opacity:0; transform:translateY(35px); transition: opacity .7s ease, transform .7s ease; }
+    .sr.in { opacity:1; transform:translateY(0); }
+    .sr-left  { opacity:0; transform:translateX(-40px); transition: opacity .7s ease, transform .7s ease; }
+    .sr-left.in  { opacity:1; transform:translateX(0); }
+    .sr-right { opacity:0; transform:translateX(40px); transition: opacity .7s ease, transform .7s ease; }
+    .sr-right.in { opacity:1; transform:translateX(0); }
+    .sr-scale { opacity:0; transform:scale(0.85); transition: opacity .6s ease, transform .6s ease; }
+    .sr-scale.in { opacity:1; transform:scale(1); }
+
+    /* ══════════════════════ AVANTAGES ══════════════════════ */
+    .avantage-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.10);
+      transition: background .3s, border-color .3s, transform .3s;
+    }
+    .avantage-card:hover {
+      background: rgba(212,160,23,0.10);
+      border-color: rgba(212,160,23,0.35);
+      transform: translateY(-5px);
+    }
+    .avantage-icon-wrap {
+      background: rgba(212,160,23,0.12);
+      transition: background .3s, transform .3s;
+    }
+    .avantage-card:hover .avantage-icon-wrap {
+      background: rgba(212,160,23,0.25);
+      transform: rotate(5deg) scale(1.1);
+    }
+
+    /* ══════════════════════ TEMOIGNAGE ══════════════════════ */
+    .testi-card { transition: transform .3s, box-shadow .3s; }
+    .testi-card:hover { transform: translateY(-6px); box-shadow: 0 25px 50px rgba(45,122,45,0.12); }
+
+    /* ══════════════════════ FORMULAIRE ══════════════════════ */
+    .form-input {
+      transition: border-color .25s, box-shadow .25s, background .25s;
+    }
+    .form-input:focus {
+      border-color: var(--forest);
+      box-shadow: 0 0 0 4px rgba(45,122,45,0.12);
+      background: #f8fbf8;
+      outline: none;
+    }
+    .form-input.error { border-color:#ef4444; box-shadow: 0 0 0 4px rgba(239,68,68,0.10); }
+
+    /* ══════════════════════ MENU MOBILE ══════════════════════ */
+    #mobile-menu {
+      max-height: 0; overflow: hidden;
+      transition: max-height .45s cubic-bezier(.4,0,.2,1), opacity .3s;
+      opacity: 0;
+    }
+    #mobile-menu.open { max-height: 600px; opacity: 1; }
+    #burger span { transition: transform .3s ease, opacity .3s ease; }
+    #burger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    #burger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    #burger.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+    /* ══════════════════════ PANIER ══════════════════════ */
+    #cart-bar {
+      transform: translateY(100px);
+      transition: transform .45s cubic-bezier(.175,.885,.32,1.275), opacity .3s;
+      opacity: 0;
+    }
+    #cart-bar.visible { transform: translateY(0); opacity: 1; }
+
+    /* ══════════════════════ BACK TO TOP ══════════════════════ */
+    #back-top {
+      opacity:0; transform:translateY(20px); pointer-events:none;
+      transition: opacity .3s, transform .3s;
+    }
+    #back-top.show { opacity:1; transform:translateY(0); pointer-events:auto; }
+
+    /* ══════════════════════ SECTION LIGNE ══════════════════════ */
+    .section-tag {
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:.72rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+      color: var(--forest); margin-bottom:12px;
+    }
+    .section-tag::before, .section-tag::after {
+      content:''; flex:1; height:1.5px;
+      background: linear-gradient(to right, transparent, var(--forest), transparent);
+      width:30px;
+    }
+
+    /* ══════════════════════ SEPARATEUR VAGUE ══════════════════════ */
+    .wave-top { margin-top:-2px; }
+
+    /* ══════════════════════ TOAST ══════════════════════ */
+    #toast {
+      opacity:0; transform:translateX(120%);
+      transition: opacity .4s, transform .4s cubic-bezier(.175,.885,.32,1.275);
+    }
+    #toast.show { opacity:1; transform:translateX(0); }
+
+    /* ══════════════════════ BADGE PULSE ══════════════════════ */
+    .badge-pulse::before {
+      content:''; display:inline-block; width:7px; height:7px;
+      background:#4aaa4a; border-radius:50%; margin-right:6px;
+      animation: pulse-r 1.8s infinite;
+    }
+
+    /* ══════════════════════ COUNTER ══════════════════════ */
+    .counter { animation: countUp .6s ease forwards; }
+
+    /* ══════════════════════ SECTION HERO GRAIN ══════════════════════ */
+    .hero-grain::after {
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size:128px; opacity:.4;
+    }
+
+    /* Filtre actif */
+    .filter-active {
+      background: var(--forest) !important;
+      color: #fff !important;
+      border-color: var(--forest) !important;
+    }
+
+    /* ══════════════════════ SCROLLBAR ══════════════════════ */
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:#f0faf0; }
+    ::-webkit-scrollbar-thumb { background: var(--forest); border-radius:10px; }
+
+    /* ══════════════════════ SELECTION ══════════════════════ */
+    ::selection { background: rgba(45,122,45,0.25); }
+  </style>
+</head>
+
+<body class="bg-white">
+
+<!-- ████████████████████████ NAVBAR ████████████████████████ -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-transparent">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8">
+    <div class="flex items-center justify-between h-20">
+
+      <!-- Logo -->
+      <a href="#accueil" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-forest flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+          <svg class="w-6 h-6 text-gold-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C8 7 5 11 5 15a7 7 0 0014 0c0-4-3-8-7-13z"/>
+            <line x1="12" y1="15" x2="12" y2="22" stroke-linecap="round" stroke-width="2"/>
+            <line x1="9" y1="19" x2="15" y2="19" stroke-linecap="round" stroke-width="2"/>
+          </svg>
+        </div>
+        <div>
+          <span class="nav-logo-text block text-xl font-bold text-white leading-none tracking-tight" style="font-family:'Playfair Display',serif">
+            Agro<span class="nav-logo-accent text-gold-light">Terroir</span>
+          </span>
+          <span class="text-[10px] text-white/50 font-medium tracking-[.2em] uppercase">Ferme & Nature</span>
+        </div>
+      </a>
+
+      <!-- Desktop menu -->
+      <div class="hidden lg:flex items-center gap-1">
+        <a href="#accueil"   class="nav-link text-white/90 hover:text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-white/10 transition-all">Accueil</a>
+        <a href="#apropos"   class="nav-link text-white/90 hover:text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-white/10 transition-all">À propos</a>
+        <a href="#produits"  class="nav-link text-white/90 hover:text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-white/10 transition-all">Produits</a>
+        <a href="#avantages" class="nav-link text-white/90 hover:text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-white/10 transition-all">Nos valeurs</a>
+        <a href="#contact"   class="nav-link text-white/90 hover:text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-white/10 transition-all">Contact</a>
+        <a href="#contact"
+          class="btn-shimmer ml-3 text-white text-sm font-semibold px-6 py-2.5 rounded-xl shadow-lg hover:shadow-clay/30 transition-shadow">
+          🛒 Commander
+        </a>
+      </div>
+
+      <!-- Burger -->
+      <button id="burger" aria-label="Menu"
+        class="lg:hidden flex flex-col gap-[5px] items-end p-2 rounded-xl hover:bg-white/10 transition-colors"
+        onclick="toggleMenu()">
+        <span class="block h-0.5 w-6 bg-white rounded"></span>
+        <span class="block h-0.5 w-4 bg-white rounded"></span>
+        <span class="block h-0.5 w-6 bg-white rounded"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="lg:hidden bg-forest-800 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-5 py-5 flex flex-col gap-1">
+      <a href="#accueil"   onclick="closeMenu()" class="px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl text-sm font-medium transition-all flex items-center gap-3"><span>🏠</span> Accueil</a>
+      <a href="#apropos"   onclick="closeMenu()" class="px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl text-sm font-medium transition-all flex items-center gap-3"><span>🌿</span> À propos</a>
+      <a href="#produits"  onclick="closeMenu()" class="px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl text-sm font-medium transition-all flex items-center gap-3"><span>🛍️</span> Produits</a>
+      <a href="#avantages" onclick="closeMenu()" class="px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl text-sm font-medium transition-all flex items-center gap-3"><span>⭐</span> Nos valeurs</a>
+      <a href="#contact"   onclick="closeMenu()" class="px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl text-sm font-medium transition-all flex items-center gap-3"><span>📩</span> Contact</a>
+      <a href="#contact"   onclick="closeMenu()"
+        class="mt-2 btn-shimmer text-white text-sm font-semibold px-4 py-3 rounded-xl text-center shadow">
+        🛒 Passer une commande
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ████████████████████████ HERO ████████████████████████ -->
+<section id="accueil" class="hero-section hero-grain relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden">
+
+  <!-- Cercles décoratifs -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-forest/20 rounded-full blur-[80px]"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gold/15 rounded-full blur-[80px]"></div>
+    <div class="absolute top-10 right-10 w-2 h-2 bg-gold-light rounded-full animate-float"></div>
+    <div class="absolute bottom-20 left-16 w-1.5 h-1.5 bg-gold-light/60 rounded-full animate-float delay-300"></div>
+    <div class="absolute top-1/2 right-16 w-1 h-1 bg-white/60 rounded-full animate-float delay-500"></div>
+  </div>
+
+  <div class="relative z-10 max-w-5xl px-6 pt-28 pb-24">
+
+    <!-- Badge live -->
+    <div class="opacity-0-init animate-fade-up delay-100 inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-xs font-semibold tracking-widest uppercase px-5 py-2.5 rounded-full mb-10 shadow-xl">
+      <span class="badge-pulse"></span>
+      Récolte de saison disponible
+    </div>
+
+    <!-- Titre -->
+    <h1 class="opacity-0-init animate-fade-up delay-200 font-display font-black text-white leading-[1.05] mb-7" style="font-size:clamp(2.8rem,7vw,5.5rem)">
+      De notre terre<br/>
+      <em class="not-italic text-gradient-gold">à votre assiette</em>
+    </h1>
+
+    <!-- Sous-titre -->
+    <p class="opacity-0-init animate-fade-up delay-300 text-white/70 text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto mb-12">
+      Fruits, légumes et céréales cultivés naturellement,<br class="hidden sm:block"/>
+      récoltés à maturité, livrés directement depuis notre ferme.
+    </p>
+
+    <!-- CTA -->
+    <div class="opacity-0-init animate-fade-up delay-400 flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="#produits"
+        class="btn-shimmer text-white font-bold px-9 py-4 rounded-2xl text-base shadow-2xl hover:shadow-clay/40 transition-all hover:-translate-y-0.5 active:translate-y-0">
+        🛒 Découvrir nos produits
+      </a>
+      <a href="#apropos"
+        class="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/25 text-white font-semibold px-9 py-4 rounded-2xl text-base transition-all hover:-translate-y-0.5">
+        Notre histoire →
+      </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="opacity-0-init animate-fade-up delay-600 mt-20 grid grid-cols-3 gap-4 sm:gap-10 max-w-xl mx-auto border-t border-white/15 pt-10">
+      <div>
+        <p class="font-display text-3xl sm:text-4xl font-black text-gold-light">150+</p>
+        <p class="text-white/50 text-xs font-medium tracking-wider uppercase mt-1">Hectares</p>
+      </div>
+      <div class="border-x border-white/15">
+        <p class="font-display text-3xl sm:text-4xl font-black text-gold-light">3K+</p>
+        <p class="text-white/50 text-xs font-medium tracking-wider uppercase mt-1">Clients</p>
+      </div>
+      <div>
+        <p class="font-display text-3xl sm:text-4xl font-black text-gold-light">25ans</p>
+        <p class="text-white/50 text-xs font-medium tracking-wider uppercase mt-1">D'expérience</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flèche scroll -->
+  <a href="#apropos" class="animate-bounce-arrow absolute bottom-8 left-1/2 -translate-x-1/2 text-white/40 hover:text-white/80 transition-colors">
+    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"/>
+    </svg>
+  </a>
+</section>
+
+<!-- Vague transition hero → à propos -->
+<div class="wave-top bg-cream -mt-1">
+  <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full" style="display:block">
+    <path d="M0 60L1440 60L1440 0C1200 50 800 60 720 30C640 0 240 50 0 0Z" fill="#0d280d"/>
+  </svg>
+</div>
+
+<!-- ████████████████████████ À PROPOS ████████████████████████ -->
+<section id="apropos" class="py-24 bg-cream overflow-hidden">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8">
+    <div class="grid lg:grid-cols-2 gap-16 xl:gap-24 items-center">
+
+      <!-- Colonne image -->
+      <div class="sr-left relative">
+        <div class="relative">
+          <!-- Image principale -->
+          <div class="rounded-3xl overflow-hidden shadow-2xl aspect-[4/5] max-w-sm mx-auto lg:mx-0">
+            <img src="https://images.unsplash.com/photo-1595273670150-bd0c3c392e46?w=800&q=85"
+              alt="Agriculteur africain dans son champ"
+              class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"/>
+          </div>
+          <!-- Image secondaire flottante -->
+          <div class="hidden lg:block absolute -right-8 top-1/3 w-44 h-44 rounded-2xl overflow-hidden shadow-2xl border-4 border-white animate-float">
+            <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&q=80"
+              alt="Récolte" class="w-full h-full object-cover"/>
+          </div>
+          <!-- Badge expérience -->
+          <div class="absolute -bottom-5 -right-3 lg:right-auto lg:-left-8 bg-forest text-white rounded-2xl px-6 py-4 shadow-2xl">
+            <p class="font-display text-3xl font-black text-gold-light">25+</p>
+            <p class="text-sm text-white/70 font-medium mt-0.5 leading-tight">années de<br/>passion</p>
+          </div>
+          <!-- Badge bio -->
+          <div class="absolute top-5 -left-4 lg:left-auto lg:-right-4 bg-white rounded-2xl px-4 py-2.5 shadow-xl flex items-center gap-2">
+            <span class="text-xl">🌿</span>
+            <div>
+              <p class="text-xs font-bold text-forest">100% Naturel</p>
+              <p class="text-xs text-gray-400 font-medium">Sans pesticides</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne texte -->
+      <div class="sr-right">
+        <div class="section-tag">Notre histoire</div>
+        <h2 class="font-display font-black text-forest-800 leading-tight mb-6" style="font-size:clamp(2rem,4vw,3rem)">
+          Une ferme familiale au cœur<br/>
+          <span class="text-gradient-green">de la terre africaine</span>
+        </h2>
+        <p class="text-gray-600 leading-relaxed mb-5 text-[15px]">
+          Fondée par la famille <strong class="text-forest font-semibold">Koné</strong> en 1999, AgroTerroir est née d'une conviction profonde : offrir des produits sains, frais et accessibles directement du producteur au consommateur. Sur nos <strong class="text-forest font-semibold">150 hectares</strong> de terres fertiles, nous cultivons chaque saison une diversité de fruits, légumes et céréales, sans engrais chimiques.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-10 text-[15px]">
+          Notre modèle de <strong class="text-forest font-semibold">vente directe</strong> garantit transparence et équité — pour vous offrir le meilleur de notre récolte au prix juste, sans intermédiaire, en préservant la richesse de notre sol.
+        </p>
+
+        <!-- Valeurs -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="sr flex items-center gap-3 bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:border-forest/30 hover:shadow-md transition-all">
+            <div class="w-11 h-11 bg-forest-50 rounded-xl flex items-center justify-center text-xl shrink-0">🌱</div>
+            <div><p class="font-semibold text-gray-800 text-sm">100% Naturel</p><p class="text-xs text-gray-400">Sans pesticides</p></div>
+          </div>
+          <div class="sr flex items-center gap-3 bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:border-forest/30 hover:shadow-md transition-all">
+            <div class="w-11 h-11 bg-gold/10 rounded-xl flex items-center justify-center text-xl shrink-0">📍</div>
+            <div><p class="font-semibold text-gray-800 text-sm">Circuit court</p><p class="text-xs text-gray-400">Local & direct</p></div>
+          </div>
+          <div class="sr flex items-center gap-3 bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:border-forest/30 hover:shadow-md transition-all">
+            <div class="w-11 h-11 bg-forest-50 rounded-xl flex items-center justify-center text-xl shrink-0">♻️</div>
+            <div><p class="font-semibold text-gray-800 text-sm">Éco-responsable</p><p class="text-xs text-gray-400">Zéro gaspillage</p></div>
+          </div>
+          <div class="sr flex items-center gap-3 bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:border-forest/30 hover:shadow-md transition-all">
+            <div class="w-11 h-11 bg-clay/10 rounded-xl flex items-center justify-center text-xl shrink-0">❤️</div>
+            <div><p class="font-semibold text-gray-800 text-sm">Fait avec soin</p><p class="text-xs text-gray-400">Récolte artisanale</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ████████████████████████ PRODUITS ████████████████████████ -->
+<section id="produits" class="py-24 bg-white">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8">
+
+    <!-- En-tête -->
+    <div class="text-center max-w-2xl mx-auto mb-14 sr">
+      <div class="section-tag">Nos récoltes</div>
+      <h2 class="font-display font-black text-forest-800 leading-tight mb-4" style="font-size:clamp(2rem,4vw,2.8rem)">
+        Produits frais<br/><span class="text-gradient-green">de saison</span>
+      </h2>
+      <p class="text-gray-500 text-[15px] leading-relaxed">
+        Chaque produit est récolté à maturité, conditionné avec soin et livré rapidement pour vous garantir fraîcheur et saveur optimales.
+      </p>
+    </div>
+
+    <!-- Filtres -->
+    <div class="flex flex-wrap justify-center gap-3 mb-12 sr">
+      <button onclick="filterCat('tous')" data-cat="tous"
+        class="filter-btn filter-active px-5 py-2 text-sm font-semibold rounded-full border-2 border-forest transition-all">Tous</button>
+      <button onclick="filterCat('legume')" data-cat="legume"
+        class="filter-btn px-5 py-2 text-sm font-semibold rounded-full border-2 border-gray-200 text-gray-600 hover:border-forest hover:text-forest transition-all">🥦 Légumes</button>
+      <button onclick="filterCat('fruit')" data-cat="fruit"
+        class="filter-btn px-5 py-2 text-sm font-semibold rounded-full border-2 border-gray-200 text-gray-600 hover:border-forest hover:text-forest transition-all">🍎 Fruits</button>
+      <button onclick="filterCat('cereale')" data-cat="cereale"
+        class="filter-btn px-5 py-2 text-sm font-semibold rounded-full border-2 border-gray-200 text-gray-600 hover:border-forest hover:text-forest transition-all">🌾 Céréales</button>
+      <button onclick="filterCat('epice')" data-cat="epice"
+        class="filter-btn px-5 py-2 text-sm font-semibold rounded-full border-2 border-gray-200 text-gray-600 hover:border-forest hover:text-forest transition-all">🍯 Épices & Autres</button>
+    </div>
+
+    <!-- Grille produits -->
+    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <!-- ── Produit 1 ── Tomates -->
+      <article class="prod-card sr-scale relative rounded-3xl overflow-hidden bg-white border border-gray-100 shadow-md flex flex-col" data-cat="legume">
+        <div class="overflow-hidden h-56 bg-gray-100 relative">
+          <img class="prod-card-img w-full h-full object-cover"
+            src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&q=85" alt="Tomates"/>
+          <div class="absolute top-3 left-3 flex gap-2 z-10">
+            <span class="bg-red-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">Légume</span>
+          </div>
+          <div class="absolute top-3 right-3 z-10">
+            <span class="bg-white/90 backdrop-blur text-forest text-[10px] font-bold px-2.5 py-1 rounded-full shadow flex items-center gap-1">🌿 Bio</span>
+          </div>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <h3 class="font-display font-bold text-gray-900 text-lg mb-2">Tomates Cœur de Bœuf</h3>
+          <p class="text-sm text-gray-500 leading-relaxed flex-1">Charnues, juteuses et gorgées de soleil. Idéales pour les salades estivales et sauces maison.</p>
+          <div class="flex items-center justify-between mt-5 pt-4 border-t border-gray-100">
+            <div>
+              <span class="text-clay font-black text-xl">1 800</span>
+              <span class="text-gray-400 text-xs font-medium ml-1">FCFA / kg</span>
+            </div>
+            <button onclick="addToCart('Tomates Cœur de Bœuf', 1800)"
+              class="bg-forest hover:bg-forest-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-all shadow hover:shadow-forest/25 active:scale-95">
+              + Ajouter
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- ── Produit 2 ── Mangues -->
+      <article class="prod-card sr-scale relative rounded-3xl overflow-hidden bg-white border border-gray-100 shadow-md flex flex-col" data-cat="fruit">
+        <div class="overflow-hidden h-56 bg-gray-100 relative">
+          <img class="prod-card-img w-full h-full object-cover"
+            src="https://images.unsplash.com/photo-1553279768-865429fa0078?w=600&q=85" alt="Mangues"/>
+          <div class="absolute top-3 left-3 flex gap-2 z-10">
+            <span class="bg-amber-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">Fruit</span>
+          </div>
+          <div class="absolute top-3 right-3 z-10">
+            <span class="bg-gold text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow flex items-center gap-1">⭐ Top vente</span>
+          </div>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <h3 class="font-display font-bold text-gray-900 text-lg mb-2">Mangues Kent Sucrées</h3>
+          <p class="text-sm text-gray-500 leading-relaxed flex-1">Douces, fibreuses et gorgées de soleil tropical. Cueillies à pleine maturité sur nos manguiers centenaires.</p>
+          <div class="flex items-center justify-between mt-5 pt-4 border-t border-gray-100">
+            <div>
+              <span class="text-clay font-black text-xl">1 200</span>
+              <span class="text-gray-400 text-xs font-medium ml-1">FCFA / kg</span>
+            </div>
+            <button onclick="addToCart('Mangues Kent', 1200)"
+              class="bg-forest hover:bg-forest-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-all shadow hover:shadow-forest/25 active:scale-95">
+              + Ajouter
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- ── Produit 3 ── Farine de maïs -->
+      <article class="prod-card sr-scale relative rounded-3xl overflow-hidden bg-white border border-gray-100 shadow-md flex flex-col" data-cat="cereale">
+        <div class="overflow-hidden h-56 bg-gray-100 relative">
+          <img class="prod-card-img w-full h-full object-cover"
+            src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&q=85" alt="Maïs"/>
+          <div class="absolute top-3 left-3 flex gap-2 z-10">
+            <span class="bg-yellow-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">Céréale</span>
+          </div>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <h3 class="font-display font-bold text-gray-900 text-lg mb-2">Farine de Maïs Artisanale</h3>
+          <p class="text-sm text-gray-500 leading-relaxed flex-1">Moulue sur pierre à partir de maïs locaux non traités. Riche en fibres, parfaite pour le tô, la bouillie et les galettes.</p>
+          <div class="flex items-center justify-between mt-5 pt-4 border-t border-gray-100">
+            <div>
+              <span class="text-clay font-black text-xl">650</span>
+              <span class="text-gray-400 text-xs font-medium ml-1">FCFA / kg</span>
+            </div>
+            <button onclick="addToCart('Farine de Maïs', 650)"
+              class="bg-forest hover:bg-forest-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-all shadow hover:shadow-forest/25 active:scale-95">
+              + Ajouter
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- ── Produit 4 ── Gombo -->
+      <article class="prod-card sr-scale relative rounded-3xl overflow-hidden bg-white border border-gray-100 shadow-md flex flex-col" data-cat="legume">
+        <div class="overflow-hidden h-56 bg-gray-100 relative">
+          <img class="prod-card-img w-full h-full object-cover"
+            src="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=600&q=85" alt="Gombo"/>
+          <div class="absolute top-3 left-3 flex gap-2 z-10">
+            <span class="bg-green-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">Légume</span>
+          </div>
+          <div class="absolute top-3 right-3 z-10">
+            <span class="bg-white/90 backdrop-blur text-forest text-[10px] font-bold px-2.5 py-1 rounded-full shadow">🌿 Bio</span>
+          </div>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <h3 class="font-display font-bold text-gray-900 text-lg mb-2">Gombo Frais du Jardin</h3>
+          <p class="text-sm text-gray-500 leading-relaxed flex-1">Tendre et savoureux, récolté le matin même. Incontournable pour vos sauces locales et ragoûts traditionnels.</p>
+          <div class="flex items-center justify-between mt-5 pt-4 border-t border-gray-100">
+            <div>
+              <span class="text-clay font-black text-xl">900</span>
+              <span class="text-gray-400 text-xs font-medium ml-1">FCFA / kg</span>
+            </div>
+            <button onclick="addToCart('Gombo Frais', 900)"
+              class="bg-forest hover:bg-forest-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-all shadow hover:shadow-forest/25 active:scale-95">
+              + Ajouter
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- ── Produit 5 ── Miel -->
+      <article class="prod-card sr-scale relative rounded-3xl overflow-hidden bg-white border border-gray-100 shadow-md flex flex-col" data-cat="epice">
+        <div class="overflow-hidden h-56 bg-gray-100 relative">
+          <img class="prod-card-img w-full h-full object-cover"
+            src="https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=600&q=85" alt="Miel"/>
+          <div class="absolute top-3 left-3 flex gap-2 z-10">
+            <span class="bg-yellow-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">Apiculture</span>
+          </div>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <h3 class="font-display font-bold text-gray-900 text-lg mb-2">Miel Pur de Savane</h3>
+          <p class="text-sm text-gray-500 leading-relaxed flex-1">Récolté sur nos prairies sauvages. Ce miel artisanal concentre tous les arômes floraux de la savane africaine.</p>
+          <div class="flex items-center justify-between mt-5 pt-4 border-t border-gray-100">
+            <div>
+              <span class="text-clay font-black text-xl">4 500</span>
+              <span class="text-gray-400 text-xs font-medium ml-1">FCFA / pot</span>
+            </div>
+            <button onclick="addToCart('Miel de Savane', 4500)"
+              class="bg-forest hover:bg-forest-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-all shadow hover:shadow-forest/25 active:scale-95">
+              + Ajouter
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- ── Produit 6 ── Bananes plantain -->
+      <article class="prod-card sr-scale relative rounded-3xl overflow-hidden bg-white border border-gray-100 shadow-md flex flex-col" data-cat="fruit">
+        <div class="overflow-hidden h-56 bg-gray-100 relative">
+          <img class="prod-card-img w-full h-full object-cover"
+            src="https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=600&q=85" alt="Banane Plantain"/>
+          <div class="absolute top-3 left-3 flex gap-2 z-10">
+            <span class="bg-amber-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">Fruit</span>
+          </div>
+          <div class="absolute top-3 right-3 z-10">
+            <span class="bg-white/90 backdrop-blur text-forest text-[10px] font-bold px-2.5 py-1 rounded-full shadow">🌿 Bio</span>
+          </div>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <h3 class="font-display font-bold text-gray-900 text-lg mb-2">Bananes Plantain Mûres</h3>
+          <p class="text-sm text-gray-500 leading-relaxed flex-1">Plantains dorés idéaux frits en alloco, bouillis ou en chips. Récoltés à point pour une saveur optimale.</p>
+          <div class="flex items-center justify-between mt-5 pt-4 border-t border-gray-100">
+            <div>
+              <span class="text-clay font-black text-xl">750</span>
+              <span class="text-gray-400 text-xs font-medium ml-1">FCFA / kg</span>
+            </div>
+            <button onclick="addToCart('Bananes Plantain', 750)"
+              class="bg-forest hover:bg-forest-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-all shadow hover:shadow-forest/25 active:scale-95">
+              + Ajouter
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- ── Produit 7 ── Riz -->
+      <article class="prod-card sr-scale relative rounded-3xl overflow-hidden bg-white border border-gray-100 shadow-md flex flex-col" data-cat="cereale">
+        <div class="overflow-hidden h-56 bg-gray-100 relative">
+          <img class="prod-card-img w-full h-full object-cover"
+            src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&q=85" alt="Riz"/>
+          <div class="absolute top-3 left-3 z-10">
+            <span class="bg-yellow-700 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">Céréale</span>
+          </div>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <h3 class="font-display font-bold text-gray-900 text-lg mb-2">Riz Local Parfumé</h3>
+          <p class="text-sm text-gray-500 leading-relaxed flex-1">Cultivé sans pesticides dans nos rizières. Ce riz demi-complet est riche en nutriments, parfumé et savoureux.</p>
+          <div class="flex items-center justify-between mt-5 pt-4 border-t border-gray-100">
+            <div>
+              <span class="text-clay font-black text-xl">580</span>
+              <span class="text-gray-400 text-xs font-medium ml-1">FCFA / kg</span>
+            </div>
+            <button onclick="addToCart('Riz Local', 580)"
+              class="bg-forest hover:bg-forest-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-all shadow hover:shadow-forest/25 active:scale-95">
+              + Ajouter
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- ── Produit 8 ── Gingembre -->
+      <article class="prod-card sr-scale relative rounded-3xl overflow-hidden bg-white border border-gray-100 shadow-md flex flex-col" data-cat="epice">
+        <div class="overflow-hidden h-56 bg-gray-100 relative">
+          <img class="prod-card-img w-full h-full object-cover"
+            src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=600&q=85" alt="Gingembre"/>
+          <div class="absolute top-3 left-3 z-10">
+            <span class="bg-orange-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">Épice</span>
+          </div>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <h3 class="font-display font-bold text-gray-900 text-lg mb-2">Gingembre Frais Bio</h3>
+          <p class="text-sm text-gray-500 leading-relaxed flex-1">Puissant et aromatique. Parfait en jus détox, tisanes ou cuisine épicée. Reconnu pour ses nombreuses vertus santé.</p>
+          <div class="flex items-center justify-between mt-5 pt-4 border-t border-gray-100">
+            <div>
+              <span class="text-clay font-black text-xl">2 200</span>
+              <span class="text-gray-400 text-xs font-medium ml-1">FCFA / kg</span>
+            </div>
+            <button onclick="addToCart('Gingembre Bio', 2200)"
+              class="bg-forest hover:bg-forest-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-all shadow hover:shadow-forest/25 active:scale-95">
+              + Ajouter
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- ── Produit 9 ── Arachides -->
+      <article class="prod-card sr-scale relative rounded-3xl overflow-hidden bg-white border border-gray-100 shadow-md flex flex-col" data-cat="cereale">
+        <div class="overflow-hidden h-56 bg-gray-100 relative">
+          <img class="prod-card-img w-full h-full object-cover"
+            src="https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=600&q=85" alt="Arachides"/>
+          <div class="absolute top-3 left-3 z-10">
+            <span class="bg-yellow-800 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">Légumineuse</span>
+          </div>
+          <div class="absolute top-3 right-3 z-10">
+            <span class="bg-gold text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">⭐ Populaire</span>
+          </div>
+        </div>
+        <div class="p-6 flex flex-col flex-1">
+          <h3 class="font-display font-bold text-gray-900 text-lg mb-2">Arachides Grillées</h3>
+          <p class="text-sm text-gray-500 leading-relaxed flex-1">Croquantes et savoureuses. Grillées artisanalement pour préserver tous leurs arômes naturels. Idéales en snack ou cuisine.</p>
+          <div class="flex items-center justify-between mt-5 pt-4 border-t border-gray-100">
+            <div>
+              <span class="text-clay font-black text-xl">1 100</span>
+              <span class="text-gray-400 text-xs font-medium ml-1">FCFA / kg</span>
+            </div>
+            <button onclick="addToCart('Arachides Grillées', 1100)"
+              class="bg-forest hover:bg-forest-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-all shadow hover:shadow-forest/25 active:scale-95">
+              + Ajouter
+            </button>
+          </div>
+        </div>
+      </article>
+
+    </div><!-- /grid -->
+  </div>
+</section>
+
+<!-- ████████████████████████ AVANTAGES ████████████████████████ -->
+<section id="avantages" class="py-24 bg-forest-900" style="background:linear-gradient(135deg,#0d280d 0%,#1a481a 50%,#0d280d 100%)">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8">
+
+    <div class="text-center max-w-2xl mx-auto mb-14 sr">
+      <div class="section-tag" style="color:#f5d76e">Nos engagements</div>
+      <h2 class="font-display font-black text-white leading-tight mb-4" style="font-size:clamp(2rem,4vw,2.8rem)">
+        Pourquoi choisir<br/>
+        <span class="text-gradient-gold">AgroTerroir ?</span>
+      </h2>
+      <p class="text-white/50 text-[15px] leading-relaxed">Nous nous engageons chaque jour pour votre santé, l'environnement et le développement de l'agriculture africaine.</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+      <div class="avantage-card rounded-3xl p-8 text-center group sr">
+        <div class="avantage-icon-wrap w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center">
+          <svg class="w-8 h-8 text-gold-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <h3 class="text-white font-bold text-base mb-3 transition-colors">100% Naturel</h3>
+        <p class="text-white/45 text-sm leading-relaxed">Sans pesticides, sans OGM. Certifié agriculture naturelle, respectueux de la biodiversité.</p>
+      </div>
+
+      <div class="avantage-card rounded-3xl p-8 text-center group sr">
+        <div class="avantage-icon-wrap w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center">
+          <svg class="w-8 h-8 text-gold-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/>
+          </svg>
+        </div>
+        <h3 class="text-white font-bold text-base mb-3">Livraison rapide</h3>
+        <p class="text-white/45 text-sm leading-relaxed">Livraison sous 24–48h à domicile ou en point relais. Fraîcheur garantie à la livraison.</p>
+      </div>
+
+      <div class="avantage-card rounded-3xl p-8 text-center group sr">
+        <div class="avantage-icon-wrap w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center">
+          <svg class="w-8 h-8 text-gold-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/>
+          </svg>
+        </div>
+        <h3 class="text-white font-bold text-base mb-3">Éco-responsable</h3>
+        <p class="text-white/45 text-sm leading-relaxed">Emballages biodégradables, zéro gaspillage, bilan carbone maîtrisé. La planète nous tient à cœur.</p>
+      </div>
+
+      <div class="avantage-card rounded-3xl p-8 text-center group sr">
+        <div class="avantage-icon-wrap w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center">
+          <svg class="w-8 h-8 text-gold-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h3 class="text-white font-bold text-base mb-3">Prix juste</h3>
+        <p class="text-white/45 text-sm leading-relaxed">Vente directe producteur sans intermédiaire. Qualité premium au meilleur prix, toute l'année.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ████████████████████████ TEMOIGNAGES ████████████████████████ -->
+<section class="py-24 bg-cream">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8">
+
+    <div class="text-center max-w-2xl mx-auto mb-14 sr">
+      <div class="section-tag">Avis clients</div>
+      <h2 class="font-display font-black text-forest-800 leading-tight mb-4" style="font-size:clamp(2rem,4vw,2.8rem)">
+        Ils nous font<br/><span class="text-gradient-green">confiance</span>
+      </h2>
+      <p class="text-gray-500 text-[15px]">La satisfaction de nos clients est notre plus belle récompense au quotidien.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+
+      <!-- Témoignage 1 -->
+      <div class="testi-card bg-white rounded-3xl p-8 shadow-md border border-gray-100 flex flex-col sr">
+        <!-- Étoiles -->
+        <div class="flex gap-1 mb-5">
+          <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        </div>
+        <!-- Guillemets déco -->
+        <svg class="w-8 h-8 text-forest/15 mb-3" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+        <p class="text-gray-600 italic leading-relaxed text-sm flex-1">
+          Depuis que je commande chez AgroTerroir, mes repas ont changé de saveur ! Les légumes sont ultra frais, les prix sont justes et la livraison toujours ponctuelle. Je recommande à tout mon quartier !
+        </p>
+        <div class="flex items-center gap-3 mt-6 pt-5 border-t border-gray-100">
+          <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&q=80"
+            alt="Fatou Diallo" class="w-12 h-12 rounded-full object-cover ring-2 ring-forest/20"/>
+          <div>
+            <p class="font-semibold text-gray-900 text-sm">Fatou Diallo</p>
+            <p class="text-gray-400 text-xs">Mère de famille · Abidjan, CI</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Témoignage 2 — featured -->
+      <div class="testi-card rounded-3xl p-8 shadow-xl flex flex-col sr" style="background:linear-gradient(145deg,#1a481a,#0d280d)">
+        <div class="flex gap-1 mb-5">
+          <svg class="w-5 h-5 text-gold-light" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-5 h-5 text-gold-light" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-5 h-5 text-gold-light" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-5 h-5 text-gold-light" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-5 h-5 text-gold-light" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        </div>
+        <svg class="w-8 h-8 text-white/15 mb-3" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+        <p class="text-white/80 italic leading-relaxed text-sm flex-1">
+          Notre restaurant s'approvisionne exclusivement chez AgroTerroir depuis 2 ans. Qualité constante, produits frais et authentiques, livraison impeccable. Un vrai partenariat de confiance que je recommande à tous les professionnels de la restauration.
+        </p>
+        <div class="flex items-center gap-3 mt-6 pt-5 border-t border-white/15">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80"
+            alt="Moussa Konaté" class="w-12 h-12 rounded-full object-cover ring-2 ring-gold/40"/>
+          <div>
+            <p class="font-semibold text-white text-sm">Moussa Konaté</p>
+            <p class="text-white/40 text-xs">Chef cuisinier · Restaurant Le Baobab, Bamako</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Témoignage 3 -->
+      <div class="testi-card bg-white rounded-3xl p-8 shadow-md border border-gray-100 flex flex-col sr">
+        <div class="flex gap-1 mb-5">
+          <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <svg class="w-5 h-5 text-gray-200" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        </div>
+        <svg class="w-8 h-8 text-forest/15 mb-3" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+        <p class="text-gray-600 italic leading-relaxed text-sm flex-1">
+          La farine de maïs et les arachides sont exceptionnelles. On sent vraiment la différence avec les produits industriels. Le panier hebdomadaire est devenu un incontournable pour toute ma famille à Dakar.
+        </p>
+        <div class="flex items-center gap-3 mt-6 pt-5 border-t border-gray-100">
+          <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&q=80"
+            alt="Aminata Traoré" class="w-12 h-12 rounded-full object-cover ring-2 ring-forest/20"/>
+          <div>
+            <p class="font-semibold text-gray-900 text-sm">Aminata Traoré</p>
+            <p class="text-gray-400 text-xs">Restauratrice · Dakar, Sénégal</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ████████████████████████ CONTACT ████████████████████████ -->
+<section id="contact" class="py-24 bg-white">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8">
+
+    <div class="text-center max-w-2xl mx-auto mb-16 sr">
+      <div class="section-tag">Nous contacter</div>
+      <h2 class="font-display font-black text-forest-800 leading-tight mb-4" style="font-size:clamp(2rem,4vw,2.8rem)">
+        Une question ?<br/><span class="text-gradient-green">On vous répond.</span>
+      </h2>
+      <p class="text-gray-500 text-[15px]">Notre équipe vous répond sous 24h. Écrivez-nous ou appelez directement.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-5 gap-12 xl:gap-16 items-start">
+
+      <!-- Formulaire -->
+      <div class="lg:col-span-3 sr-left">
+        <form id="contact-form" onsubmit="submitForm(event)" novalidate
+          class="bg-cream rounded-3xl p-8 md:p-10 shadow-md space-y-6">
+
+          <div class="grid sm:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-xs font-bold text-forest-700 mb-2 tracking-wider uppercase">Nom complet <span class="text-red-400">*</span></label>
+              <input id="f-nom" type="text" placeholder="Ex : Kofi Mensah"
+                class="form-input w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 bg-white text-sm"/>
+              <p id="err-nom" class="text-red-500 text-xs mt-1.5 hidden">Veuillez entrer votre nom.</p>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-forest-700 mb-2 tracking-wider uppercase">Email <span class="text-red-400">*</span></label>
+              <input id="f-email" type="email" placeholder="kofi@email.com"
+                class="form-input w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 bg-white text-sm"/>
+              <p id="err-email" class="text-red-500 text-xs mt-1.5 hidden">Email invalide.</p>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-forest-700 mb-2 tracking-wider uppercase">Téléphone / WhatsApp</label>
+            <input id="f-tel" type="tel" placeholder="+225 07 00 00 00"
+              class="form-input w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 bg-white text-sm"/>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-forest-700 mb-2 tracking-wider uppercase">Objet <span class="text-red-400">*</span></label>
+            <select id="f-objet"
+              class="form-input w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 bg-white text-sm text-gray-600">
+              <option value="">Sélectionner un objet...</option>
+              <option>🛒 Commander des produits</option>
+              <option>❓ Demande d'information</option>
+              <option>🤝 Partenariat professionnel (restaurant, hôtel...)</option>
+              <option>🚚 Suivi de livraison</option>
+              <option>💬 Autre demande</option>
+            </select>
+            <p id="err-objet" class="text-red-500 text-xs mt-1.5 hidden">Champ requis.</p>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-forest-700 mb-2 tracking-wider uppercase">Message <span class="text-red-400">*</span></label>
+            <textarea id="f-message" rows="5" placeholder="Décrivez votre demande en détail..."
+              class="form-input w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 bg-white text-sm resize-none"></textarea>
+            <p id="err-message" class="text-red-500 text-xs mt-1.5 hidden">Message trop court (min. 10 caractères).</p>
+          </div>
+
+          <button type="submit" id="submit-btn"
+            class="btn-shimmer w-full text-white font-bold py-4 rounded-2xl text-sm shadow-lg hover:shadow-clay/30 transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:cursor-not-allowed">
+            <span id="btn-text">📩 Envoyer le message</span>
+          </button>
+
+          <p class="text-center text-xs text-gray-400">🔒 Vos données sont confidentielles et ne sont jamais partagées.</p>
+        </form>
+      </div>
+
+      <!-- Coordonnées -->
+      <div class="lg:col-span-2 space-y-5 sr-right">
+
+        <div class="bg-cream rounded-2xl p-5 flex items-start gap-4 hover:shadow-md transition-shadow">
+          <div class="w-11 h-11 bg-forest-50 rounded-xl flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </div>
+          <div>
+            <h4 class="font-semibold text-gray-900 text-sm mb-1">Email</h4>
+            <a href="mailto:contact@agroterroir.com" class="text-forest text-sm hover:underline">contact@agroterroir.com</a><br/>
+            <a href="mailto:commandes@agroterroir.com" class="text-gray-500 text-xs hover:text-forest">commandes@agroterroir.com</a>
+          </div>
+        </div>
+
+        <div class="bg-cream rounded-2xl p-5 flex items-start gap-4 hover:shadow-md transition-shadow">
+          <div class="w-11 h-11 bg-clay/10 rounded-xl flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-clay" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+          </div>
+          <div>
+            <h4 class="font-semibold text-gray-900 text-sm mb-1">Téléphone / WhatsApp</h4>
+            <a href="tel:+22507000000" class="text-forest text-sm hover:underline">+225 07 00 00 00</a><br/>
+            <a href="tel:+22501000000" class="text-gray-500 text-xs hover:text-forest">+225 01 00 00 00</a>
+            <p class="text-gray-400 text-xs mt-1">Lun – Sam · 7h – 19h</p>
+          </div>
+        </div>
+
+        <div class="bg-cream rounded-2xl p-5 flex items-start gap-4 hover:shadow-md transition-shadow">
+          <div class="w-11 h-11 bg-gold/15 rounded-xl flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-gold-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
+          <div>
+            <h4 class="font-semibold text-gray-900 text-sm mb-1">Adresse</h4>
+            <p class="text-gray-600 text-sm">Route de la Ferme, Zone Agricole<br/>Abidjan, Côte d'Ivoire</p>
+            <a href="https://maps.google.com" target="_blank" rel="noopener"
+              class="text-forest text-xs font-semibold hover:underline mt-1 inline-block">Voir sur la carte →</a>
+          </div>
+        </div>
+
+        <div class="bg-cream rounded-2xl p-5 flex items-start gap-4 hover:shadow-md transition-shadow">
+          <div class="w-11 h-11 bg-forest-50 rounded-xl flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div>
+            <h4 class="font-semibold text-gray-900 text-sm mb-1">Horaires boutique</h4>
+            <p class="text-gray-600 text-sm">Mardi – Samedi : 7h30 – 19h</p>
+            <p class="text-gray-600 text-sm">Dimanche : 8h – 13h</p>
+            <p class="text-gray-400 text-xs mt-1">Fermé le lundi</p>
+          </div>
+        </div>
+
+        <!-- Réseaux sociaux -->
+        <div class="bg-forest rounded-2xl p-5">
+          <p class="text-white font-semibold text-sm mb-4">Suivez-nous</p>
+          <div class="flex gap-3">
+            <a href="#" aria-label="Facebook"  class="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-white transition-all hover:-translate-y-0.5">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="#" aria-label="Instagram" class="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-white transition-all hover:-translate-y-0.5">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="#" aria-label="WhatsApp"  class="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-white transition-all hover:-translate-y-0.5">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </a>
+            <a href="#" aria-label="TikTok"    class="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-white transition-all hover:-translate-y-0.5">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.75a8.28 8.28 0 004.83 1.55V6.87a4.85 4.85 0 01-1.06-.18z"/></svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ████████████████████████ FOOTER ████████████████████████ -->
+<footer style="background:#080f08" class="text-gray-500 pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8">
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-10 pb-12 border-b border-white/5">
+
+      <!-- Brand -->
+      <div class="col-span-2 md:col-span-1">
+        <div class="flex items-center gap-2.5 mb-5">
+          <div class="w-9 h-9 rounded-xl bg-forest flex items-center justify-center">
+            <svg class="w-5 h-5 text-gold-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C8 7 5 11 5 15a7 7 0 0014 0c0-4-3-8-7-13z"/>
+              <line x1="12" y1="15" x2="12" y2="22" stroke-linecap="round" stroke-width="2"/>
+              <line x1="9" y1="19" x2="15" y2="19" stroke-linecap="round" stroke-width="2"/>
+            </svg>
+          </div>
+          <div>
+            <span class="block text-lg font-bold text-white leading-none" style="font-family:'Playfair Display',serif">Agro<span class="text-gold-light">Terroir</span></span>
+            <span class="text-[10px] text-gray-600 font-medium tracking-widest uppercase">Ferme & Nature</span>
+          </div>
+        </div>
+        <p class="text-sm leading-relaxed text-gray-600 mb-5">Producteurs locaux depuis 1999. Naturel, frais, livré directement depuis notre ferme africaine.</p>
+      </div>
+
+      <div>
+        <h4 class="text-white text-xs font-bold mb-5 tracking-widest uppercase">Navigation</h4>
+        <ul class="space-y-3 text-sm">
+          <li><a href="#accueil"   class="hover:text-forest-300 transition-colors">Accueil</a></li>
+          <li><a href="#apropos"   class="hover:text-forest-300 transition-colors">À propos</a></li>
+          <li><a href="#produits"  class="hover:text-forest-300 transition-colors">Nos produits</a></li>
+          <li><a href="#avantages" class="hover:text-forest-300 transition-colors">Nos valeurs</a></li>
+          <li><a href="#contact"   class="hover:text-forest-300 transition-colors">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white text-xs font-bold mb-5 tracking-widest uppercase">Produits</h4>
+        <ul class="space-y-3 text-sm">
+          <li><a href="#produits" class="hover:text-forest-300 transition-colors">Fruits & Légumes</a></li>
+          <li><a href="#produits" class="hover:text-forest-300 transition-colors">Céréales & Farines</a></li>
+          <li><a href="#produits" class="hover:text-forest-300 transition-colors">Miel & Épices</a></li>
+          <li><a href="#produits" class="hover:text-forest-300 transition-colors">Paniers de saison</a></li>
+          <li><a href="#contact"  class="hover:text-forest-300 transition-colors">Commande en gros</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white text-xs font-bold mb-5 tracking-widest uppercase">Infos</h4>
+        <ul class="space-y-3 text-sm">
+          <li><a href="#" class="hover:text-forest-300 transition-colors">Mentions légales</a></li>
+          <li><a href="#" class="hover:text-forest-300 transition-colors">Confidentialité</a></li>
+          <li><a href="#" class="hover:text-forest-300 transition-colors">Conditions de vente</a></li>
+          <li><a href="#" class="hover:text-forest-300 transition-colors">Livraison & retours</a></li>
+          <li><a href="#contact" class="hover:text-forest-300 transition-colors">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+      <p>© 2024 AgroTerroir. Tous droits réservés.</p>
+      <p class="text-gray-700">Cultivé avec ❤️ en Afrique de l'Ouest · Agriculture naturelle</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ████████████████████████ PANIER FLOTTANT ████████████████████████ -->
+<div id="cart-bar" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 pointer-events-none">
+  <div class="bg-forest-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-5 border border-white/10 backdrop-blur-sm">
+    <div class="flex items-center gap-2">
+      <span class="text-lg">🛒</span>
+      <span class="text-sm font-medium"><span id="cart-count">0</span> article(s)</span>
+    </div>
+    <div class="h-5 w-px bg-white/20"></div>
+    <span class="font-black text-gold-light"><span id="cart-total">0</span> FCFA</span>
+    <a href="#contact" onclick="hideCart()"
+      class="btn-shimmer text-white text-xs font-bold px-5 py-2 rounded-xl pointer-events-auto">
+      Commander →
+    </a>
+    <button onclick="hideCart()" class="text-white/40 hover:text-white text-base leading-none ml-1 pointer-events-auto">✕</button>
+  </div>
+</div>
+
+<!-- ████████████████████████ TOAST ████████████████████████ -->
+<div id="toast" class="fixed top-6 right-6 z-50 max-w-xs pointer-events-none">
+  <div class="bg-white border border-gray-100 shadow-2xl rounded-2xl px-5 py-4 flex items-center gap-3">
+    <span id="toast-icon" class="text-xl shrink-0">✅</span>
+    <p id="toast-text" class="text-sm font-medium text-gray-800 leading-snug"></p>
+  </div>
+</div>
+
+<!-- Bouton retour haut -->
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Retour en haut"
+  class="fixed bottom-6 right-6 z-40 w-12 h-12 bg-forest hover:bg-forest-700 text-white rounded-2xl shadow-xl flex items-center justify-center transition-all hover:-translate-y-1 active:translate-y-0">
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+  </svg>
+</button>
+
+<!-- ████████████████████████ JAVASCRIPT ████████████████████████ -->
+<script>
+'use strict';
+
+/* ─── Panier ─── */
+let cartItems = [], cartTotal = 0;
+
+function addToCart(name, price) {
+  cartItems.push({ name, price });
+  cartTotal += price;
+  document.getElementById('cart-count').textContent = cartItems.length;
+  document.getElementById('cart-total').textContent = cartTotal.toLocaleString('fr-FR');
+  const bar = document.getElementById('cart-bar');
+  bar.classList.add('visible');
+  bar.querySelector('div').style.pointerEvents = 'auto';
+  showToast('🛒', `"${name}" ajouté au panier !`, 'green');
+}
+
+function hideCart() {
+  const bar = document.getElementById('cart-bar');
+  bar.classList.remove('visible');
+}
+
+/* ─── Toast ─── */
+let toastTimer;
+function showToast(icon, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-icon').textContent = icon;
+  document.getElementById('toast-text').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ─── Menu mobile ─── */
+function toggleMenu() {
+  const m = document.getElementById('mobile-menu');
+  const b = document.getElementById('burger');
+  m.classList.toggle('open');
+  b.classList.toggle('active');
+}
+function closeMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('burger').classList.remove('active');
+}
+
+/* ─── Navbar scroll ─── */
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 60) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+
+  /* Bouton retour haut */
+  const bt = document.getElementById('back-top');
+  if (window.scrollY > 500) bt.classList.add('show');
+  else bt.classList.remove('show');
+}, { passive: true });
+
+/* ─── Lien actif ─── */
+const navSections = ['accueil','apropos','produits','avantages','contact'];
+window.addEventListener('scroll', () => {
+  let current = '';
+  navSections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 100) current = id;
+  });
+  document.querySelectorAll('.nav-link').forEach(l => {
+    const active = l.getAttribute('href') === '#' + current;
+    l.style.color = active ? (document.getElementById('navbar').classList.contains('scrolled') ? '#2d7a2d' : '#ffffff') : '';
+    l.style.background = active ? (document.getElementById('navbar').classList.contains('scrolled') ? 'rgba(45,122,45,0.08)' : 'rgba(255,255,255,0.12)') : '';
+    l.style.borderRadius = active ? '8px' : '';
+  });
+}, { passive: true });
+
+/* ─── Filtres produits ─── */
+function filterCat(cat) {
+  document.querySelectorAll('#product-grid article').forEach(card => {
+    const match = cat === 'tous' || card.dataset.cat === cat;
+    card.style.display = match ? '' : 'none';
+    if (match) {
+      card.style.opacity = '0'; card.style.transform = 'scale(0.92)';
+      setTimeout(() => { card.style.opacity = '1'; card.style.transform = ''; card.style.transition = 'opacity .4s ease, transform .4s ease'; }, 20);
+    }
+  });
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    const active = btn.dataset.cat === cat;
+    btn.classList.toggle('filter-active', active);
+    if (!active) { btn.classList.remove('filter-active'); btn.style.background=''; btn.style.color=''; }
+  });
+}
+
+// Initialiser data-cat sur les boutons de filtre
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  const m = btn.getAttribute('onclick')?.match(/'([^']+)'/);
+  if (m) btn.dataset.cat = m[1];
+});
+
+/* ─── Validation + envoi formulaire ─── */
+function submitForm(e) {
+  e.preventDefault();
+  let valid = true;
+
+  const validators = [
+    { id: 'f-nom',     err: 'err-nom',     test: v => v.trim().length >= 2 },
+    { id: 'f-email',   err: 'err-email',   test: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
+    { id: 'f-objet',   err: 'err-objet',   test: v => v !== '' },
+    { id: 'f-message', err: 'err-message', test: v => v.trim().length >= 10 },
+  ];
+
+  validators.forEach(({ id, err, test }) => {
+    const input = document.getElementById(id);
+    const errEl = document.getElementById(err);
+    const ok = test(input.value);
+    input.classList.toggle('error', !ok);
+    errEl.classList.toggle('hidden', ok);
+    if (!ok) valid = false;
+    // Reset error on input
+    input.addEventListener('input', () => {
+      if (test(input.value)) { input.classList.remove('error'); errEl.classList.add('hidden'); }
+    }, { once: false });
+  });
+
+  if (!valid) { showToast('⚠️', 'Veuillez corriger les champs en rouge.'); return; }
+
+  const btn = document.getElementById('submit-btn');
+  const txt = document.getElementById('btn-text');
+  btn.disabled = true;
+  txt.textContent = '⏳ Envoi en cours...';
+
+  setTimeout(() => {
+    btn.disabled = false;
+    txt.textContent = '📩 Envoyer le message';
+    document.getElementById('contact-form').reset();
+    validators.forEach(({ id }) => document.getElementById(id).classList.remove('error'));
+    showToast('🎉', 'Message envoyé ! On vous répond sous 24h.');
+  }, 2000);
+}
+
+/* ─── Scroll Reveal ─── */
+const srObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      const delay = entry.target.dataset.delay || 0;
+      setTimeout(() => entry.target.classList.add('in'), parseInt(delay));
+      srObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.10, rootMargin: '0px 0px -30px 0px' });
+
+// Ajouter des délais en cascade aux grilles
+document.querySelectorAll('#product-grid article').forEach((el, i) => { el.dataset.delay = (i % 3) * 100; });
+document.querySelectorAll('.testi-card').forEach((el, i) => { el.dataset.delay = i * 120; });
+document.querySelectorAll('.avantage-card').forEach((el, i) => { el.dataset.delay = i * 100; });
+
+document.querySelectorAll('.sr, .sr-left, .sr-right, .sr-scale').forEach(el => srObserver.observe(el));
+
+/* ─── Fermer menu si clic extérieur ─── */
+document.addEventListener('click', (e) => {
+  const m = document.getElementById('mobile-menu');
+  const b = document.getElementById('burger');
+  if (m.classList.contains('open') && !m.contains(e.target) && !b.contains(e.target)) closeMenu();
+});
+</script>
+
+</body>
+</html>
